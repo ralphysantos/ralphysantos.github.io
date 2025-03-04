@@ -179,9 +179,7 @@ export default {
         }
 
         function postSave(){
-            console.log(postForm);
             store.dispatch("post/ADD_POST",postForm);
-            // UserService.createPost(postForm);
 
             postForm.message = '';
             postForm.file = null;

@@ -28,7 +28,6 @@ const UserModule = {
       },
       LOGOUT_USER({ commit }) {
         UserService.logout().then(() =>{
-          console.log('test');
           commit('logout');
         });
       }

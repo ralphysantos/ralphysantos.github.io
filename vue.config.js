@@ -1,5 +1,6 @@
 const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
+  productionSourceMap: false,
   transpileDependencies: true,
   css: {
     loaderOptions: {
@@ -38,4 +39,8 @@ module.exports = defineConfig({
   //     ]
   //   }
   // }
+
+  publicPath: process.env.NODE_ENV === 'production'
+    ? '/ralphysantos.github.io/'
+    : '/'
 })
