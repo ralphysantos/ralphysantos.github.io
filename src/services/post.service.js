@@ -34,6 +34,20 @@ class PostService extends HttpService{
             });
     }
 
+    update(data){
+        return this.post('/post/update/'+ data.post_id,data,{
+            headers: {
+              'Authorization': `Bearer ${store.state.user.bearerToken}`,
+              'Content-Type': 'multipart/form-data',
+            }
+          }).then(
+            (result) => {
+                return result
+            }).catch((error) =>{
+                throw error
+            });
+    }
+
     delete (id){
         return this.post('/post/delete/'+id,{},{
             headers: {

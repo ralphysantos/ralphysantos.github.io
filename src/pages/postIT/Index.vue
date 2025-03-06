@@ -30,11 +30,15 @@
                                 <div class="d-inline-flex ms-auto ms-sm-3">
                                     <div class="dropdown">
                                         <!-- <a href="#" class="text-body" data-bs-toggle="dropdown" aria-expanded="false"> -->
-                                            <PhGear size="18" @click="post.showMenu = !post.showMenu" class="cursor-pointer"/>
+                                            <PhGear size="18" @click="post.showMenu = !post.showMenu" class="cursor-pointer" ref="dropdown" />
                                         <!-- </a> -->
 
                                         <!-- button menu -->
-                                        <div v-if="post.showMenu" class="dropdown-menu dropdown-menu-end right-0" :style="{display: post.showMenu ? 'block' : 'none'}">
+                                        <div v-if="post.showMenu" class="dropdown-menu dropdown-menu-end right-0" :style="{display: post.showMenu ? 'block' : 'none'}" @click.prevent="post.showMenu = false">
+                                            <button class="dropdown-item" @click="showEdit(post)">
+                                                <PhNotePencil size="18" class="me-2"/>
+                                                Edit Post
+                                            </button>
                                             <button class="dropdown-item" @click="postDelete(post.id)">
                                                 <PhTrash size="18" class="me-2"/>
                                                 Delete Post
@@ -110,8 +114,8 @@
                 </div>
             </div>
         </div>
-
     </div>
+    <UpdatePostModal v-if="showModal" :isOpen="showModal" @close-modal="closeModal" :post_id='post_id'/>
 </template>
 
 
@@ -124,14 +128,15 @@ import {
     // PhChats,
     PhPaperPlaneTilt,
     PhTrash,
-    PhLink
+    PhLink,
+    PhNotePencil
 } from "@phosphor-icons/vue";
 import { computed, reactive,ref } from "vue";
 import { formatDistanceToNow } from 'date-fns';
 
 import { useStore } from 'vuex';
 
-// import UserService from '@/services/user.service';
+import UpdatePostModal from './modals/UpdatePostModal.vue';
 
 export default {
     name: 'postIT',
@@ -143,9 +148,13 @@ export default {
         // PhChats,
         PhPaperPlaneTilt,
         PhTrash,
-        PhLink
+        PhLink,
+        PhNotePencil,
+        UpdatePostModal
     },
     setup(){
+        const post_id = ref(null);
+        const showModal = ref(false);
         const store = useStore();
         store.dispatch("post/GET_POSTS");
 
@@ -189,10 +198,18 @@ export default {
         function postDelete(postId){
             store.dispatch("post/DELETE_POST",postId);
         }
+        function showEdit(post){
+            post_id.value = post.id;
+            showModal.value = true;
+        }
+        function closeModal(){
+            showModal.value = false;
+        }
+
+
         function timeAgo(date){
             return formatDistanceToNow(new Date(date), { addSuffix: true });
         }
-
 
         return {
             postForm,
@@ -204,7 +221,11 @@ export default {
             postList,
             timeAgo,
             newPostList,
-            postDelete
+            postDelete,
+            showEdit,
+            showModal,
+            closeModal,
+            post_id
         }
     }
 }
